@@ -1,0 +1,87 @@
+//Binary classification using Deep Neural Networks Example: Classify movie reviews into
+positive" reviews and "negative" reviews, just based on the text content of the reviews.
+Use IMDB dataset
+
+from tensorflow.keras.datasets import imdb
+
+df=imdb.load_data(num_words=10000)
+
+print(df)
+
+(train_data, train_label), (test_data, test_label) = imdb.load_data(num_words = 10000)
+
+print(train_data)
+
+print(train_label)
+
+import numpy as np
+
+def vectorize_sequences(sequences, dimensions = 10000):
+  results = np.zeros((len(sequences), dimensions))
+  for i,sequences in enumerate(sequences):
+    results[i, sequences] = 1
+  return results
+#ka
+# Vectorize testing Data
+X_test = vectorize_sequences(test_data)
+x_train = vectorize_sequences(train_data)
+
+print(x_train)#but ithe bagh apan encode kela ani te positive negavtive zhale
+
+print(y_train)
+
+
+print(y_test)
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+     
+
+model = Sequential()
+model.add(Dense(16, input_shape=(10000, ), activation = "relu"))
+model.add(Dense(16, activation = "relu"))
+model.add(Dense(1, activation = "sigmoid"))
+
+model.compile(optimizer='adam', loss = 'mse', metrics = ['accuracy'])
+
+model.summary()
+
+history = model.fit(x_train, y_train, validation_split = 0.3, epochs = 20, verbose = 1, batch_size = 512)
+
+
+model.evaluate(X_test,y_test)
+
+
+y_pred=model.predict(X_test)
+
+
+print(y_pred[1],y_test[1])
+
+
+
+This Python code demonstrates binary classification using a deep neural network (DNN) to classify movie reviews as either "positive" or "negative" based on their text content. The IMDB dataset, which contains movie reviews labeled as positive or negative, is used for this task. Let me break down the code and provide a simple theoretical explanation:
+
+1. **Importing Libraries and Loading Data**:
+   - The code begins by importing necessary libraries, including TensorFlow and Keras. It then loads the IMDB dataset using `imdb.load_data()`. The parameter `num_words=10000` restricts the vocabulary to the 10,000 most frequently occurring words in the dataset.
+   - The dataset is split into training and testing sets: `train_data`, `train_label`, `test_data`, and `test_label`.
+
+2. **Vectorizing Sequences**:
+   - The `vectorize_sequences` function converts the sequences of words into vectors. It creates a matrix where each row corresponds to a review, and each column represents a word in the vocabulary. If a word is present in a review, its corresponding column value is set to 1; otherwise, it remains 0.
+   - Both training and testing data are vectorized using this function.
+
+3. **Model Definition**:
+   - The neural network model is defined using the Sequential API from Keras.
+   - It consists of three fully connected (Dense) layers. The first two layers have 16 units and use the ReLU activation function, while the last layer has 1 unit and uses the sigmoid activation function, which squashes the output between 0 and 1, making it suitable for binary classification.
+   - The model is compiled with the Adam optimizer, mean squared error (MSE) loss function, and accuracy as the evaluation metric.
+
+4. **Training the Model**:
+   - The model is trained using the `fit` method. Training data is used with a validation split of 30% to monitor the model's performance during training.
+   - The `epochs` parameter specifies the number of times the entire dataset is passed through the network during training.
+
+5. **Model Evaluation**:
+   - The trained model is evaluated on the test data using the `evaluate` method, which returns the loss value and accuracy.
+   
+6. **Making Predictions**:
+   - Finally, the model is used to make predictions on the test data (`X_test`), and the predicted labels are compared with the actual labels (`y_test`).
+
+Understanding this code helps in grasping the basic workflow of building a neural network for binary classification tasks using text data.

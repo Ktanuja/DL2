@@ -1,0 +1,67 @@
+
+//Multiclass classification using Deep Neural Networks: Example: Use the OCR letter recognition dataset -letter+recognition
+
+//code
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score
+
+dataset = pd.read_csv("letter-recognition.data", sep = ",")
+
+dataset.head()
+
+X = dataset.iloc[:, 1 : 17]
+Y = dataset.select_dtypes(include = [object])
+
+print(Y)
+
+X_train, X_validation, Y_train, Y_validation = train_test_split(X, Y, test_size = 0.20, random_state = 10)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+
+from yellowbrick.classifier import confusion_matrix
+cm = confusion_matrix(mlp,X_train,Y_train, X_validation, Y_validation, classes="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".split(','))
+
+X_train = scaler.transform(X_train)
+X_validation = scaler.transform(X_validation)
+
+mlp = MLPClassifier(hidden_layer_sizes = (250, 300), max_iter = 1000000, activation = 'logistic')
+
+from yellowbrick.classifier import confusion_matrix
+cm = confusion_matrix(mlp,X_train,Y_train, X_validation, Y_validation, classes="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".split(','))
+
+!pip install yellowbrick
+
+cm.fit(X_train, Y_train.values.ravel())
+
+cm.score(X_validation, Y_validation)
+
+predictions = cm.predict(X_validation)
+predictions
+
+print("Accuracy: ", accuracy_score(Y_validation, predictions))
+
+This code performs multiclass classification using a Deep Neural Network (DNN) on the OCR letter recognition dataset. Here's a simple theoretical explanation of what's happening:
+
+1. **Data Loading and Preparation**: The code begins by importing necessary libraries and loading the OCR letter recognition dataset. It then splits the data into input features (X) and target labels (Y). The input features represent characteristics of the letters, while the target labels represent the actual letters themselves.
+
+2. **Data Splitting**: The dataset is split into training and validation sets using the `train_test_split` function. This is important for evaluating the performance of the trained model on unseen data.
+
+3. **Data Scaling**: The input features are standardized using `StandardScaler()`. This process helps to normalize the data and makes the training process more efficient and stable.
+
+4. **Model Initialization**: An MLPClassifier (Multi-Layer Perceptron) model is initialized. MLP is a type of feedforward neural network, commonly used for classification tasks. It consists of multiple layers of nodes (neurons), each connected to the next layer.
+
+5. **Model Training**: The MLP model is trained on the training data (`X_train` and `Y_train`) using the `fit` method. During training, the model adjusts its parameters (weights and biases) to minimize the difference between predicted and actual labels.
+
+6. **Model Evaluation**: The trained model's performance is evaluated using the validation set (`X_validation` and `Y_validation`). The accuracy of the model is calculated using the `accuracy_score` function, which compares the predicted labels with the actual labels.
+
+7. **Confusion Matrix Visualization**: The code also utilizes the `confusion_matrix` visualization from the Yellowbrick library. A confusion matrix provides a more detailed evaluation of the model's performance by showing the count of true positive, false positive, true negative, and false negative predictions for each class.
+
+8. **Prediction**: Finally, the trained model is used to make predictions on the validation set (`X_validation`). The predicted labels are compared with the actual labels to calculate the accuracy of the model.
+
+By following these steps, the code builds and evaluates a Deep Neural Network model for multiclass classification on the OCR letter recognition dataset.
+
+
